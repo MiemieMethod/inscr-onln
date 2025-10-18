@@ -1,4 +1,6 @@
-[gd_resource type="DynamicFont" load_steps=2 format=2]
+[gd_resource type="DynamicFont" load_steps=3 format=2]
+
+[ext_resource path="res://fonts/zh/zpix.ttf" type="DynamicFontData" id=1]
 
 [sub_resource type="DynamicFontData" id=1]
 antialiased = false
@@ -7,3 +9,4 @@ font_path = "res://fonts/Marksman.otf"
 [resource]
 size = 30
 font_data = SubResource( 1 )
+fallback/0 = ExtResource( 1 )

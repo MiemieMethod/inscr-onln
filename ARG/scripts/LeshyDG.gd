@@ -12,6 +12,8 @@ var passage_idx = 1
 const TEXT_SPEED = 1
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	load_dialogue()
 	load_passage("entry")
 
@@ -27,11 +29,11 @@ func load_passage(passage_name: String) -> void:
 	# Update room
 #	currentRoom = dialogue[GameOptions.options.misplays][passage_name]
 	currentRoom = dialogue[0][passage_name]
-	$UI/RoomLabel.text = passage_name
+	$UI/RoomLabel.text = Localization.t(passage_name)
 	
 	# Dialogue text
 	currentSubPassage = 0
-	$UI/Dialogue.bbcode_text = "[center]" + currentRoom.text[0] + "[/center]"
+	$UI/Dialogue.bbcode_text = "[center]" + Localization.t(currentRoom.text[0]) + "[/center]"
 	
 	$UI/Dialogue.visible = true
 	$UI/Arrow.visible = true
@@ -49,12 +51,12 @@ func load_passage(passage_name: String) -> void:
 #	yield($DelayTimer, "timeout")
 #
 #	if len(opts) > 0:
-#		$OptionA.text = "1. " + opts[0]
+#		$OptionA.text = Localization.t("1. ") + Localization.t(opts[0])
 #		$OptionA.show()
 #		$OptionA._mouse_exited()
 #
 #		if len(opts) > 1:
-#			$OptionB.text = "2. " + opts[1]
+#			$OptionB.text = Localization.t("2. ") + Localization.t(opts[1])
 #			$OptionB.show()
 #			$OptionB._mouse_exited()
 
@@ -122,7 +124,7 @@ func _input(event):
 #				return
 			
 			
-			$UI/Dialogue.bbcode_text = "[center]" + currentRoom.text[currentSubPassage + 1] + "[/center]"
+			$UI/Dialogue.bbcode_text = "[center]" + Localization.t(currentRoom.text[currentSubPassage + 1]) + "[/center]"
 #			$UI/Dialogue.visible_characters = 0
 			
 			$UI/Arrow.visible = false

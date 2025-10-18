@@ -44,6 +44,8 @@ var http_client = HTTPRequest.new()
 
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	add_child(http_client)
 	http_client.connect("request_completed", self, "_rq_completed")
 

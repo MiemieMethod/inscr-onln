@@ -86,6 +86,8 @@ var want_rematch = false
 
 # Connect in-game signals
 func _ready():
+	Localization.localize_scene(self)
+	
 	$CustomBg.texture = CardInfo.background_texture
 	
 	# Backrow
@@ -123,7 +125,7 @@ func init_match(opp_id: int, do_go_first: bool):
 	# Hide rematch UI
 	$WinScreen.visible = false
 	want_rematch = false
-	$WinScreen/Panel/VBoxContainer/HBoxContainer/RematchBtn.text = "Rematch (0/2)"
+	$WinScreen/Panel/VBoxContainer/HBoxContainer/RematchBtn.text = Localization.t("Rematch (0/2)")
 	
 	# Other UI
 	$DeckSearch.hide()
@@ -153,16 +155,16 @@ func init_match(opp_id: int, do_go_first: bool):
 	
 	elif side_deck_cards != []:
 		side_deck = side_deck_cards.duplicate()
-		$DrawPiles/YourDecks/SideDeck.text = side_deck_key
+		$DrawPiles/YourDecks/SideDeck.text = Localization.t(side_deck_key)
 	
 	elif typeof(side_deck_key) == TYPE_STRING: # Single
-		$DrawPiles/YourDecks/SideDeck.text = side_deck_key
+		$DrawPiles/YourDecks/SideDeck.text = Localization.t(side_deck_key)
 		side_deck = []
 		for _i in range(CardInfo.side_decks[side_deck_key].count):
 			side_deck.append(CardInfo.side_decks[side_deck_key].card)
 	
 	else: # Single category
-		$DrawPiles/YourDecks/SideDeck.text = " ".join([side_deck_key[1], side_deck_key[0]])
+		$DrawPiles/YourDecks/SideDeck.text = " ".join([Localization.t(side_deck_key[1]), Localization.t(side_deck_key[0])])
 		side_deck = []
 		for _i in range(CardInfo.side_decks[side_deck_key[0]].cards[side_deck_key[1]].count):
 			side_deck.append(CardInfo.side_decks[side_deck_key[0]].cards[side_deck_key[1]].card)
@@ -192,7 +194,7 @@ func init_match(opp_id: int, do_go_first: bool):
 	if "hammers_per_turn" in CardInfo.all_data and CardInfo.all_data.hammers_per_turn != -1:
 		hammers_left = CardInfo.all_data.hammers_per_turn
 
-		$LeftSideUI/HammerButton.text = "Hammer (%d/%d)" % [hammers_left, CardInfo.all_data.hammers_per_turn]
+		$LeftSideUI/HammerButton.text = Localization.t("Hammer (%d/%d)") % [hammers_left, CardInfo.all_data.hammers_per_turn]
 
 		if hammers_left == 0:
 			$LeftSideUI/HammerButton.visible = false
@@ -376,7 +378,7 @@ func search_deck():
 				bgStyle.bg_color = style.get_stylebox("normal", "Card").bg_color
 				
 			# make the button label
-			label.text = card
+			label.text = Localization.t(card)
 			label.toggle_mode = true
 			label.size_flags_horizontal = SIZE_EXPAND_FILL
 			
@@ -559,7 +561,7 @@ func draw_card(card, source = $DrawPiles/YourDecks/Deck, do_rpc = true):
 		else:
 			dst = str(len(side_deck)) + "/" + str(CardInfo.side_decks[side_deck_key[0]].cards[side_deck_key[1]].count)
 		
-	source.get_node("SizeLabel").text = dst
+	source.get_node("SizeLabel").text = Localization.t(dst)
 
 	# Hand tenta
 	for card in slotManager.all_friendly_cards():
@@ -679,7 +681,7 @@ func card_summoned(playedCard):
 	# Stoat easter egg (Goodbye)
 #	if playedCard.card_data["name"] == "Stoat":
 #		playedCard.card_data["name"] = "Total Misplay"
-#		playedCard.get_node("CardBody/VBoxContainer/Label").text = "Total Misplay"
+#		playedCard.get_node("CardBody/VBoxContainer/Label").text = Localization.t("Total Misplay")
 
 # Hammer Time
 func hammer_mode():
@@ -745,7 +747,7 @@ func move_done():
 func _on_DesyncWatcher_timeout():
 	print("Desync Detected!!!")
 	
-	$WinScreen/Panel/VBoxContainer/WinLabel.text = "Desync Detected!"
+	$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("Desync Detected!")
 	$WinScreen.visible = true
 	
 	rpc( "_opponent_detected_desync")
@@ -1018,22 +1020,22 @@ func inflict_damage(dmg):
 	
 	# Win condition
 	if lives == 0:
-		$WinScreen/Panel/VBoxContainer/WinLabel.text = "You Lose!"
+		$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("You Lose!")
 
 		# Moon special
 		if $MoonFight/BothMoons/EnemyMoon.visible:
-			$WinScreen/Panel/VBoxContainer/WinLabel.text = "You Lose via Coup de Lune!"
+			$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("You Lose via Coup de Lune!")
 
 		if not $WinScreen.visible:
 			$WinScreen.visible = true
 			get_node("/root/Main/TitleScreen").count_loss(opponent)
 		
 	if opponent_lives == 0:
-		$WinScreen/Panel/VBoxContainer/WinLabel.text = "You Win!"
+		$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("You Win!")
 
 		# Moon special
 		if $MoonFight/BothMoons/FriendlyMoon.visible:
-			$WinScreen/Panel/VBoxContainer/WinLabel.text = "You Win via Coup de Lune!"
+			$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("You Win via Coup de Lune!")
 
 		if not $WinScreen.visible:
 			$WinScreen.visible = true
@@ -1110,13 +1112,13 @@ func moon_cutscene(friendly: bool):
 func request_rematch():
 	want_rematch = true
 	rpc_id(opponent, "_rematch_requested")
-	$WinScreen/Panel/VBoxContainer/HBoxContainer/RematchBtn.text = "Rematch (1/2)"
+	$WinScreen/Panel/VBoxContainer/HBoxContainer/RematchBtn.text = Localization.t("Rematch (1/2)")
 
 func surrender():
 	
 	save_replay()
 	
-	$WinScreen/Panel/VBoxContainer/WinLabel.text = "You Surrendered!"
+	$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("You Surrendered!")
 	$WinScreen.visible = true
 	
 	rpc_id(opponent, "_opponent_surrendered")
@@ -1159,7 +1161,7 @@ remote func _opponent_surrendered():
 	save_replay()
 	
 	# Force the game to end
-	$WinScreen/Panel/VBoxContainer/WinLabel.text = "Your opponent Surrendered!"
+	$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("Your opponent Surrendered!")
 	$WinScreen.visible = true
 	
 	# Document Result
@@ -1167,7 +1169,7 @@ remote func _opponent_surrendered():
 
 remote func _opponent_detected_desync():
 	# Force the game to end
-	$WinScreen/Panel/VBoxContainer/WinLabel.text = "Desync detected!"
+	$WinScreen/Panel/VBoxContainer/WinLabel.text = Localization.t("Desync detected!")
 	$WinScreen.visible = true
 
 func debug_cleanup():
@@ -1186,7 +1188,7 @@ remote func _rematch_requested():
 		
 		init_match(opponent, not go_first)
 	else:
-		$WinScreen/Panel/VBoxContainer/HBoxContainer/RematchBtn.text = "Rematch (1/2)"	
+		$WinScreen/Panel/VBoxContainer/HBoxContainer/RematchBtn.text = Localization.t("Rematch (1/2)")
 
 remote func _rematch_occurs():
 	init_match(opponent, not go_first)
@@ -1214,7 +1216,7 @@ func start_turn():
 	# Hammers
 	if "hammers_per_turn" in CardInfo.all_data and CardInfo.all_data.hammers_per_turn != -1:
 		hammers_left = CardInfo.all_data.hammers_per_turn
-		$LeftSideUI/HammerButton.text = "Hammer (%d/%d)" % [hammers_left, CardInfo.all_data.hammers_per_turn]
+		$LeftSideUI/HammerButton.text = Localization.t("Hammer (%d/%d)") % [hammers_left, CardInfo.all_data.hammers_per_turn]
 	
 	$LeftSideUI/HammerButton.disabled = false
 

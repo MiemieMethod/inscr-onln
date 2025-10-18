@@ -3,6 +3,8 @@ extends Control
 var raised = false
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	$TextureButton.connect("pressed", self, "toggle")
 	$TextureButton.connect("pressed", get_parent().get_parent(), "_ruleset_card_clicked", [self])
 

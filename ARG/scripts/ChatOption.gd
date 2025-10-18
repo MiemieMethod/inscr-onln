@@ -1,6 +1,8 @@
 extends Label
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	connect("mouse_entered", self, "_mouse_entered")
 	connect("mouse_exited", self, "_mouse_exited")
 

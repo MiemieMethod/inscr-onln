@@ -23,6 +23,8 @@ func set_lives(lives):
 		$Candle1.texture = exTex
 
 func _ready():
+	Localization.localize_scene(self)
+
 	if CardInfo.all_data.num_candles == 3:
 		$Candle3.visible = true
 		$Base2.visible = true

@@ -10,6 +10,8 @@ const rulesetURLs = [
 ]
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	get_node("VersionLabel").text = CardInfo.VERSION
 
 func _on_Continue_pressed():
@@ -39,7 +41,7 @@ func _on_Continue_pressed():
 		$LoadingBox.visible = false
 		
 		$SelectionBox/Rows/ErrLabel.visible = true
-		$SelectionBox/Rows/ErrLabel.text = "Invalid URL"
+		$SelectionBox/Rows/ErrLabel.text = Localization.t("Invalid URL")
 
 
 
@@ -51,7 +53,7 @@ func _on_RulesetRequest_request_completed(_result, response_code, _headers, body
 			$LoadingBox.visible = false
 			
 			$SelectionBox/Rows/ErrLabel.visible = true
-			$SelectionBox/Rows/ErrLabel.text = "Target file contains invalid JSON"
+			$SelectionBox/Rows/ErrLabel.text = Localization.t("Target file contains invalid JSON")
 			return
 		
 		if not "cards" in parse.result:
@@ -59,7 +61,7 @@ func _on_RulesetRequest_request_completed(_result, response_code, _headers, body
 			$LoadingBox.visible = false
 			
 			$SelectionBox/Rows/ErrLabel.visible = true
-			$SelectionBox/Rows/ErrLabel.text = "Target URL is not a valid ruleset"
+			$SelectionBox/Rows/ErrLabel.text = Localization.t("Target URL is not a valid ruleset")
 			return
 		
 		var f = File.new()
@@ -78,7 +80,7 @@ func _on_RulesetRequest_request_completed(_result, response_code, _headers, body
 		$LoadingBox.visible = false
 		
 		$SelectionBox/Rows/ErrLabel.visible = true
-		$SelectionBox/Rows/ErrLabel.text = "Target file gave error " + str(response_code)
+		$SelectionBox/Rows/ErrLabel.text = Localization.t("Target file gave error ") + str(response_code)
 
 
 func _on_OptionButton_item_selected(index):

@@ -5,6 +5,9 @@ var pid = -1
 signal recieved_output(line)
 signal process_ended()
 
+func _ready():
+	Localization.localize_scene(self)
+
 func start_tunnel():
 	print("Starting tunnel")
 	

@@ -8,6 +8,8 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Localization.localize_scene(self)
+	
 	if "noupdate" in OS.get_cmdline_args():
 		return
 		
@@ -25,20 +27,20 @@ func _on_HTTPRequest_request_completed(_result, response_code, _headers, body):
 		
 		if res.latest_version != CardInfo.VERSION:
 			$PatchStoats.visible = true
-			$PatchStoats/Notes.text = res.motd_stoat
+			$PatchStoats/Notes.text = Localization.t(res.motd_stoat)
 			CardInfo.latest_version = res.latest_version
 		
 		if res.motd_stoat_force != "":
 			$PatchStoats.visible = true
-			$PatchStoats/Notes.text = res.motd_stoat_force
+			$PatchStoats/Notes.text = Localization.t(res.motd_stoat_force)
 		
 #		if "IMF Competitive" in CardInfo.ruleset and res.latest_ruleset != CardInfo.ruleset:
 #			$Grimorger.visible = true
-#			$Grimorger/Notes.text = res.motd_grimorger_update
+#			$Grimorger/Notes.text = Localization.t(res.motd_grimorger_update)
 		
 		if res.motd_grimorger != "":
 			$Grimorger.visible = true
-			$Grimorger/Notes.text = res.motd_grimorger
+			$Grimorger/Notes.text = Localization.t(res.motd_grimorger)
 		else:
 			$TunnelRequest.request("http://localtunnel.me")
 
@@ -50,4 +52,4 @@ func _on_Button_pressed():
 func _on_TunnelRequest_request_completed(result, response_code, headers, body):
 	if response_code != 200:
 		$Grimorger.visible = true
-		$Grimorger/Notes.text = "The tunnel is down! Room code lobbies won't work!"
+		$Grimorger/Notes.text = Localization.t("The tunnel is down! Room code lobbies won't work!")

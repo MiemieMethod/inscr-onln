@@ -63,7 +63,7 @@ func draw_tooltip(cDat):
 %s
 %d/%d
 """ % [
-	cDat.name,
+	Localization.t(cDat.name),
 	cDat.attack,
 	cDat.health,
 	]
@@ -71,7 +71,7 @@ func draw_tooltip(cDat):
 	# Keywords
 	for keyword in CardInfo.keywords:
 		if keyword in cDat:
-			target.hint_tooltip += wrap_string(CardInfo.keywords[keyword]) + '\n'
+			target.hint_tooltip += wrap_string(Localization.t(CardInfo.keywords[keyword])) + '\n'
 	
 	# Add sigils
 	if not "sigils" in cDat:
@@ -82,10 +82,10 @@ func draw_tooltip(cDat):
 """
 %s:
 %s
-""" % [sigil, wrap_string(CardInfo.gen_sig_desc(sigil, cDat))]
+""" % [Localization.t(sigil), wrap_string(Localization.t(CardInfo.gen_sig_desc(sigil, cDat)))]
 	
 	if "evolution" in cDat:
-		target.hint_tooltip += "\nThis card transforms into / releases:\n" + cDat.evolution
+		target.hint_tooltip += "\n" + Localization.t("This card transforms into / releases:") + "\n" + Localization.t(cDat.evolution)
 
 
 func wrap_string(string_to_wrap: String) -> String:
@@ -95,8 +95,11 @@ func wrap_string(string_to_wrap: String) -> String:
 	
 	while current_char < len(string_to_wrap):
 		
-		if string_to_wrap[current_char] == ' ' and line_len >= 35:
+		if not Localization.is_chinese_or_japanese_lang(Localization.lang) and string_to_wrap[current_char] == ' ' and line_len >= 35:
 			string_to_wrap[current_char] = '\n'
+			line_len = 0
+		if Localization.is_chinese_or_japanese_lang(Localization.lang) and line_len >= 20:
+			string_to_wrap[current_char] = string_to_wrap[current_char] + '\n'
 			line_len = 0
 			
 		line_len += 1

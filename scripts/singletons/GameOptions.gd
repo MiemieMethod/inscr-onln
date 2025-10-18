@@ -22,7 +22,8 @@ var options = {
 	"improveSearch": true,
 	"vsync": true,
 	"lock_fps": true,
-	"allow_all_scripts": false
+	"allow_all_scripts": false,
+	"language": "en"
 }
 
 func read_options():
@@ -36,6 +37,8 @@ func read_options():
 			# Do this to preserve defaults
 			for opt in nOptions:
 				options[opt] = nOptions[opt]
+	else:
+		options["language"] = Localization._detect_best_language()
 
 func save_options():
 	var sFile = File.new()
@@ -55,6 +58,9 @@ func _ready():
 		get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_2D, SceneTree.STRETCH_ASPECT_IGNORE, Vector2(1920, 1080))
 
 	OS.window_fullscreen = options["fullscreen"]
+	
+	if Engine.has_singleton("Localization") or typeof(Localization) != TYPE_NIL:
+		Localization.load_language(options["language"])
 
 func _exit_tree():
 	# Save to file

@@ -7,8 +7,9 @@ var curr_rot: float = -60
 # TODO: Rework this and fully replace the game's pck file. Only way to do this w/ singletons
 
 func _ready():
-	$UpdateBox/VBoxContainer/Label.text = "Update from " + CardInfo.VERSION \
-	+ " to " + CardInfo.latest_version + "?"
+	Localization.localize_scene(self)
+
+	$UpdateBox/VBoxContainer/Label.text = Localization.t("Update from %s to %s?") % [CardInfo.VERSION, CardInfo.latest_version]
 
 
 func _process(delta):

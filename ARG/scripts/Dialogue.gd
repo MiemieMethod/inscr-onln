@@ -5,6 +5,8 @@ var dialogue: Dictionary = {}
 var currentRoom: Dictionary = {}
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	load_dialogue()
 
 func load_dialogue():

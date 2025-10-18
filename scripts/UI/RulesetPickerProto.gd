@@ -22,7 +22,8 @@ func ARGIT():
 		get_tree().change_scene("res://ARG/Scenes/DarkRoom.tscn")
 
 func _ready():
-	
+	Localization.localize_scene(self)
+
 	var d = Directory.new()
 	d.make_dir(CardInfo.rulesets_path)
 	
@@ -72,7 +73,7 @@ func parse_ruleset(rs: String):
 	var res: JSONParseResult = JSON.parse(rs)
 	
 	if res.error:
-		errorBox("Error parsing ruleset at line %d:\n\"%s\"" % [res.error_line, res.error_string])
+		errorBox(Localization.t("Error parsing ruleset at line %d:\n\"%s\"") % [res.error_line, res.error_string])
 	else:
 		use_ruleset(res.result)
 
@@ -150,7 +151,7 @@ func fetch_featured_rulesets():
 func _on_FeaturedFetcher_request_completed(_result, response_code, _headers, body):
 	
 	if response_code != 200:
-		errorBox("Failed fetching featured\nResponse code " + str(response_code))
+		errorBox(Localization.t("Failed fetching featured\nResponse code ") + str(response_code))
 		$Status.hide()
 		return
 	
@@ -161,7 +162,7 @@ func _on_FeaturedFetcher_request_completed(_result, response_code, _headers, bod
 	# Jake
 	$Jake.show()
 	$Jakebubble.show()
-	$Jakebubble/Jakemsg.text = featured.jake
+	$Jakebubble/Jakemsg.text = Localization.t(featured.jake)
 	
 	for rs_dat in featured.rulesets:
 		add_featured_ruleset_from_dat(rs_dat)
@@ -170,8 +171,9 @@ func _on_FeaturedFetcher_request_completed(_result, response_code, _headers, bod
 func add_featured_ruleset_from_dat(dat: Dictionary):
 	
 	var nl = line_prefab.instance()
+	Localization.localize_scene(nl)
 	$FeaturedRulesets/VBoxContainer/ScrollContainer/FeatRsCont.add_child(nl)
-	nl.get_node("HBoxContainer/RSName").text = dat.name + ("\n\n" + dat.description if "description" in dat else "")
+	nl.get_node("HBoxContainer/RSName").text = Localization.t(dat.name) + ("\n\n" + Localization.t(dat.description) if "description" in dat else "")
 	
 	if "portrait" in dat:
 		nl.get_node("HBoxContainer/RSPort").texture = load("res://gfx/" + dat.portrait + ".png")
@@ -184,12 +186,12 @@ func add_featured_ruleset_from_dat(dat: Dictionary):
 func add_ruleset_from_url(url: String):
 	print("Adding ruleset from url: ", url)
 	$Status.show()
-	$Status/PanelContainer/HBoxContainer/Label.text = "Downloading Ruleset..."
+	$Status/PanelContainer/HBoxContainer/Label.text = Localization.t("Downloading Ruleset...")
 	$RSDownloader.request(url)
 
 func _on_RSDownloader_request_completed(_result, response_code, _headers, body):
 	if response_code != 200:
-		errorBox("Failed downloading ruleset\nResponse code " + str(response_code))
+		errorBox(Localization.t("Failed downloading ruleset\nResponse code ") + str(response_code))
 		return
 	
 	var jString = body.get_string_from_utf8()
@@ -211,10 +213,14 @@ func add_ruleset_from_json(json: String):
 	var jRes: JSONParseResult = JSON.parse(json)
 	
 	if jRes.error:
-		errorBox("Error parsing ruleset at line %d:\n\"%s\"" % [jRes.error_line, jRes.error_string])
+		errorBox(Localization.t("Error parsing ruleset at line %d:\n\"%s\"") % [jRes.error_line, jRes.error_string])
 		return
 	
 	var ruleset = jRes.result
+	
+	Localization.register_ruleset_translations(ruleset.get("translations", {}))
+	# optionally extract missing candidate strings for translators:
+	Localization.extract_strings_from_ruleset(ruleset, CardInfo.rulesets_i18n_candidates_path + ruleset.ruleset + "_i18n_candidates.json")
 	
 	var fd = File.new()
 	fd.open(CardInfo.rulesets_path + ruleset.ruleset + ".json", File.WRITE)
@@ -241,8 +247,9 @@ func add_saved_ruleset_entry_dat(dat):
 	visible_rulesets.append(dat.ruleset)
 	
 	var nl = line_prefab.instance()
+	Localization.localize_scene(nl)
 	$SavedRulesets/VBoxContainer/ScrollContainer/SavedRsCont.add_child(nl)
-	nl.get_node("HBoxContainer/RSName").text = dat.ruleset + ("\n\n" + dat.description if "description" in dat else "")
+	nl.get_node("HBoxContainer/RSName").text = Localization.t(dat.ruleset) + ("\n\n" + Localization.t(dat.description) if "description" in dat else "")
 	
 	if "portrait" in dat:
 		nl.get_node("HBoxContainer/RSPort").texture = load("res://gfx/" + dat.portrait + ".png")
@@ -360,7 +367,7 @@ func download_scripts(dat):
 				
 				# Sigil description
 			else:
-				errorBox("Failed to download sigil %s\nPlease make the provided URL is valid!" % script_name)
+				errorBox(Localization.t("Failed to download sigil %s\nPlease make the provided URL is valid!") % script_name)
 				$Status.hide()
 				return
 		

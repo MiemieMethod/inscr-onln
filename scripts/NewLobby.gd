@@ -18,6 +18,7 @@ var rsCache: Dictionary = {}
 
 # Godot Handlers
 func _ready():
+	Localization.localize_scene(self)
 
 	randomize()
 
@@ -28,7 +29,7 @@ func _ready():
 	get_tree().connect("network_peer_disconnected", self, "_erase_player")
 
 	# Version
-	get_node("../RulesetLabel").text = CardInfo.ruleset
+	get_node("../RulesetLabel").text = Localization.t(CardInfo.ruleset)
 	
 	# Custom Bg
 	if CardInfo.background_texture:
@@ -44,7 +45,7 @@ func _ready():
 		$LobbyHost/Rows/Roomname.visible = false
 	
 		$Menu/VBoxContainer/HostBtn.disabled = true
-		$Menu/VBoxContainer/HostBtn.text = "Host Game (unavailable on web version)"
+		$Menu/VBoxContainer/HostBtn.text = Localization.t("Host Game (unavailable on web version)")
 		
 
 	# Select default deck by default
@@ -64,7 +65,7 @@ func _ready():
 # Methods
 func debug_host():
 	$LobbyHost/Rows/HostType/Type.select(1)
-	$LobbyHost/Rows/Nickname/LineEdit.text = "DEBUG_HOST"
+	$LobbyHost/Rows/Nickname/LineEdit.text = Localization.t("DEBUG_HOST")
 	$Blocker.visible = true
 
 	_on_Host_pressed()
@@ -75,7 +76,7 @@ func debug_join():
 	yield(get_tree().create_timer(0.1), "timeout")
 
 	$LobbyJoin/Rows/Address/IPInput.text = "127.0.0.1"
-	$LobbyJoin/Rows/Nickname/LineEdit.text = "DEBUG_CLIENT"
+	$LobbyJoin/Rows/Nickname/LineEdit.text = Localization.t("DEBUG_CLIENT")
 	$LobbyJoin/Rows/HostType/LType.select(1)
 
 	_on_Join_pressed()
@@ -84,7 +85,7 @@ func debug_join():
 #	_on_LobbyReady_pressed()
 
 func errorBox(message, show_dlbtn: bool = false):
-	$ErrorBox/Contents/Label.text = message
+	$ErrorBox/Contents/Label.text = Localization.t(message)
 	$ErrorBox.visible = true
 	$ErrorBox/Contents/ErrorDL.visible = show_dlbtn
 	
@@ -113,19 +114,19 @@ func update_lobby():
 	lobbyList.clear()
 
 	for player in lobby_data.players:
-		lobbyList.add_item(lobby_data.players[player].name + " (" + str(lobby_data.players[player].wins) + " wins)", readyIcon if lobby_data.players[player].ready else unreadyIcon)
+		lobbyList.add_item(Localization.t("%s (%d wins)") % [lobby_data.players[player].name, lobby_data.players[player].wins], readyIcon if lobby_data.players[player].ready else unreadyIcon)
 
-	$InLobby/Rows/Spectators.text = str(len(lobby_data.spectators)) + " Spectators"
+	$InLobby/Rows/Spectators.text = Localization.t("%d Spectators") % len(lobby_data.spectators)
 	
-	$InLobby/Rows/LCode.text = ("IP: " if lobby_data.is_ip else "Lobby Code: ") + lobby_data.code
+	$InLobby/Rows/LCode.text = (Localization.t("IP: ") if lobby_data.is_ip else Localization.t("Lobby Code: ")) + lobby_data.code
 
 func count_victory():
 	lobby_data.players[get_tree().get_network_unique_id()].wins += 1
-	cardFight.get_node("PlayerInfo/MyInfo/Username").text = lobby_data.players[get_tree().get_network_unique_id()].name + " (" + str(lobby_data.players[get_tree().get_network_unique_id()].wins) + " wins)"
+	cardFight.get_node("PlayerInfo/MyInfo/Username").text = Localization.t("%s (%d wins)") % [lobby_data.players[get_tree().get_network_unique_id()].name, lobby_data.players[get_tree().get_network_unique_id()].wins]
 
 func count_loss(opponent):
 	lobby_data.players[opponent].wins += 1
-	cardFight.get_node("PlayerInfo/TheirInfo/Username").text = lobby_data.players[opponent].name + " (" + str(lobby_data.players[opponent].wins) + " wins)"
+	cardFight.get_node("PlayerInfo/TheirInfo/Username").text = Localization.t("%s (%d wins)") % [lobby_data.players[opponent].name, lobby_data.players[opponent].wins]
 
 func init_fight(go_first: int):
 	print("Morbin time")
@@ -178,8 +179,8 @@ func init_fight(go_first: int):
 		else:
 			cardFight.side_deck_key = null
 			
-	cardFight.get_node("PlayerInfo/MyInfo/Username").text = lobby_data.players[myId].name + " (" + str(lobby_data.players[myId].wins) + " wins)"
-	cardFight.get_node("PlayerInfo/TheirInfo/Username").text = lobby_data.players[oppId].name + " (" + str(lobby_data.players[oppId].wins) + " wins)"
+	cardFight.get_node("PlayerInfo/MyInfo/Username").text = Localization.t("%s (%d wins)") % [lobby_data.players[myId].name, lobby_data.players[myId].wins]
+	cardFight.get_node("PlayerInfo/TheirInfo/Username").text = Localization.t("%s (%d wins)") % [lobby_data.players[oppId].name, lobby_data.players[oppId].wins]
 	cardFight.get_node("PlayerInfo/MyInfo/Pfp").texture = load("res://gfx/portraits/" + lobby_data.players[myId].pfp + ".png")
 	cardFight.get_node("PlayerInfo/TheirInfo/Pfp").texture = load("res://gfx/portraits/" + lobby_data.players[oppId].pfp + ".png")
 
@@ -279,11 +280,11 @@ func _on_Host_pressed():
 	else:
 		$InLobby.visible = true
 
-		$InLobby/Rows/LCode.text = "IP: N/A"
+		$InLobby/Rows/LCode.text = Localization.t("IP: N/A")
 		lobby_data.code = "N/A"
 		for ip in IP.get_local_addresses():
 			if ip.begins_with("192"):
-				$InLobby/Rows/LCode.text = "IP: " + ip
+				$InLobby/Rows/LCode.text = Localization.t("IP: ") + ip
 				lobby_data.code = ip
 				break
 				
@@ -302,7 +303,7 @@ func _on_LobbyQuit_pressed():
 
 func _on_LogFolder_pressed():
 	if OS.get_name() == "HTML5":
-		errorBox("Your game directory is: " + CardInfo.data_path)
+		errorBox(Localization.t("Your game directory is: ") + CardInfo.data_path)
 		return
 	OS.shell_open("file://" + OS.get_user_data_dir())
 
@@ -364,12 +365,12 @@ func _on_LobbyReady_pressed():
 				
 				if len(do["cards"]) < CardInfo.all_data.deck_size_min and not "listen" in OS.get_cmdline_args() and not "join" in OS.get_cmdline_args():
 					$SpecialBlocker.visible = true
-					errorBox("The currently selected deck is too small!\nMust be at least " + str(CardInfo.all_data.deck_size_min) + " cards!")
+					errorBox(Localization.t("The currently selected deck is too small!\nMust be at least %d cards!") % CardInfo.all_data.deck_size_min)
 					return
 				
 				if "side_deck_cards" in do and len(do.side_deck_cards) == 0:
 					$SpecialBlocker.visible = true
-					errorBox("Your side deck is empty!")
+					errorBox(Localization.t("Your side deck is empty!"))
 					return
 			
 			lobby_data.players[key].ready = not lobby_data.players[key].ready
@@ -413,7 +414,7 @@ func _on_tunnel_output():
 	
 	$LoadingScreen.visible = false
 	$InLobby.visible = true
-#		$InLobby/Rows/LCode.text = "Lobby Code: " + code
+#		$InLobby/Rows/LCode.text = Localization.t("Lobby Code: ") + code
 	
 	lobby_data.is_ip = false
 	
@@ -422,7 +423,7 @@ func _on_tunnel_output():
 	update_lobby()
 	
 func _on_tunnel_error(err):
-	errorBox(err)
+	errorBox(Localization.t(err))
 	$LoadingScreen.visible = false
 	
 	if $InLobby.visible:
@@ -472,7 +473,7 @@ func _connected_fail():
 	$InLobby.visible = false
 	cardFight.visible = false
 	cardFight.get_node("MoonFight/AnimationPlayer").play("RESET")	
-	errorBox("Connection to url: " + url + " failed!")
+	errorBox(Localization.t("Connection to url: %s failed!") % url)
 
 func _player_connected():
 	pass
@@ -522,7 +523,7 @@ remote func _rejected(reason: String):
 	$LoadingScreen.visible = false
 	$LobbyJoin.visible = false
 	$InLobby.visible = false
-	errorBox("Disconnected by opponent:\nReason: " + reason)
+	errorBox(Localization.t("Disconnected by opponent:\nReason: ") + reason)
 
 	NetworkManager.kill()
 	
@@ -531,7 +532,7 @@ remote func _ruleset_rejected(rs_dat: Dictionary):
 	$LoadingScreen.visible = false
 	$LobbyJoin.visible = false
 	$InLobby.visible = false
-	errorBox("Your opponent is running ruleset \"" + rs_dat.ruleset + "\", download it?", true)
+	errorBox(Localization.t("Your opponent is running ruleset \"%s\", download it?") % rs_dat.ruleset, true)
 	
 	rsCache = rs_dat
 	

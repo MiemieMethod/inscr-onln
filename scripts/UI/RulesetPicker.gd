@@ -3,6 +3,9 @@ extends Control
 var can_interact = true
 var raisedCard = null
 
+func _ready():
+	Localization.localize_scene(self)
+
 func _ruleset_card_clicked(rCard):
 	for card in $Rulesets.get_children():
 		if card != rCard:

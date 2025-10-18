@@ -68,6 +68,7 @@ func clear_custom_background():
 	
 
 func _ready():
+	Localization.localize_scene(self)
 	
 	if CardInfo.background_texture != null:
 		apply_custom_background()
@@ -95,6 +96,7 @@ func _ready():
 func init_sidedeck_ui():
 	for sd in CardInfo.side_decks:
 		sidedeck_de.add_item(sd)
+	Localization.localize_scene(sidedeck_de)
 
 func init_search_ui():
 	var id = 2
@@ -106,6 +108,7 @@ func init_search_ui():
 		for sigil in CardInfo.all_sigils:
 			sb.add_item(sigil, id)
 			id += 1
+		Localization.localize_scene(sb)
 
 func search(_arg = null):
 	for card in searchResults.get_children():
@@ -122,6 +125,11 @@ func search(_arg = null):
 			search_cards[i] = CardInfo.from_name(search_cards[i])
 	
 	for card in search_cards:
+		var localized_sigils = []
+		if "sigils" in card:
+			for sigil in card["sigils"]:
+				localized_sigils.append(Localization.t(sigil))
+		
 		# Don't show banned cards
 		if "banned" in card and tab_cont.current_tab == 0 and not GameOptions.options.show_banned:
 			continue
@@ -129,14 +137,14 @@ func search(_arg = null):
 		# Search conditions
 		
 		# Name
-		if not name_so.text.to_lower() in card["name"].to_lower() and name_so.text != "":
+		if not name_so.text.to_lower() in Localization.t(card["name"]).to_lower() and name_so.text != "":
 			continue
 		
 		# Sigils
-		if sigil_so_1.text != "Any" and (not "sigils" in card or not sigil_so_1.text in card["sigils"]):
-			if not (sigil_so_1.text == "None" and not "sigils" in card):
+		if sigil_so_1.text != Localization.t("Any") and (not "sigils" in card or not sigil_so_1.text in localized_sigils):
+			if not (sigil_so_1.text == Localization.t("None") and not "sigils" in card):
 				continue
-		if sigil_so_2.text != "Any" and (not "sigils" in card or not sigil_so_2.text in card["sigils"]):
+		if sigil_so_2.text != Localization.t("Any") and (not "sigils" in card or not sigil_so_2.text in localized_sigils):
 			continue
 		# Cost type
 		if cost_type_so.selected == 1 and not "blood_cost" in card:
@@ -317,7 +325,7 @@ func load_deck(_arg = null):
 		rdj = dFile.get_as_text()
 		
 		$Error.show()
-		$Error/PanelContainer/VBoxContainer/Label.text = "Failed to parse deck %s at line %d with error:\n\"%s\"" % [selector_de.text, parse_result.error_line, parse_result.error_string]
+		$Error/PanelContainer/VBoxContainer/Label.text = Localization.t("Failed to parse deck %s at line %d with error:\n\"%s\"") % [selector_de.text, parse_result.error_line, parse_result.error_string]
 		
 		parse_result = JSON.parse(rdj)
 	
@@ -449,6 +457,7 @@ func _on_SDSel_item_selected(index):
 
 		for prefix in side_deck.cards:
 			sidedeck_prefix.add_item(prefix)
+		Localization.localize_scene(sidedeck_prefix)
 		
 	draw_sidedeck(key)
 
@@ -480,7 +489,7 @@ func draw_sidedeck(key):
 
 func validate_draft_side():
 	
-	var valid_side_cards = CardInfo.all_data.side_decks[sidedeck_de.get_item_text(sidedeck_de.selected)].cards
+	var valid_side_cards = CardInfo.all_data.side_decks[CardInfo.side_decks.keys()[sidedeck_de.selected]].cards
 	
 	for sCard in sidedeck_container.get_children():
 		var current_data = sCard.card_data
@@ -596,7 +605,7 @@ func _on_URLDownloadBtn_pressed():
 		$Status.show()
 		$FromURL.hide()
 	else:
-		$Error/PanelContainer/VBoxContainer/Label.text = "Error parsing URL"
+		$Error/PanelContainer/VBoxContainer/Label.text = Localization.t("Error parsing URL")
 		$Error.show()
 		$Status.hide()
 
@@ -608,7 +617,7 @@ func _on_DeckDownloader_request_completed(_result, response_code, _headers, _bod
 		load_deck()
 	else:
 		$Error.show()
-		$Error/PanelContainer/VBoxContainer/Label.text = "Download failed: response code %d" % response_code
+		$Error/PanelContainer/VBoxContainer/Label.text = Localization.t("Download failed: response code %d") % response_code
 
 func _on_FromFile_file_selected(path):
 	

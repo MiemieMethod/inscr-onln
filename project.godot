@@ -55,6 +55,7 @@ CardInfo="*res://scripts/singletons/CardInfo.gd"
 GameOptions="*res://scripts/singletons/GameOptions.gd"
 NetworkManager="*res://scripts/singletons/NetworkManager.gd"
 TunnelHandlerNew="*res://scripts/singletons/TunnelHandlerNew.gd"
+Localization="*res://scripts/singletons/Localization.gd"
 
 [debug]
 

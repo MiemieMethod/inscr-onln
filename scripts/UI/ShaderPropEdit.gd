@@ -8,6 +8,8 @@ onready var children = get_children()
 var init = false
 
 func _ready():
+	Localization.localize_scene(self)
+
 	for child in children:
 		# Mark nodes to ignore with _
 		if child.name[0] != "_":

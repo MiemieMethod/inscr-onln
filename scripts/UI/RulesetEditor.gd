@@ -19,7 +19,8 @@ var current_card = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	
+	Localization.localize_scene(self)
+
 	$SaveDialog.current_dir = "user://rulesets/"
 	
 	var root = tree.create_item()
@@ -67,7 +68,7 @@ func draw_card():
 	load_pixport()
 	cardDats[1].value = current_card.attack
 	cardDats[2].value = current_card.health
-	cardDats[3].text = current_card.name
+	cardDats[3].text = Localization.t(current_card.name)
 	
 	if "sigils" in current_card:
 		cardDats[4].select(1+CardInfo.all_sigils.keys().find(current_card.sigils[0]))
@@ -98,7 +99,7 @@ func draw_card():
 	cardDats[18].pressed = "nohammer" in current_card
 	cardDats[19].pressed = "conduit" in current_card
 	
-#	cardDats[21].text = cDat.evolution if "evolution" in cDat else ""
+#	cardDats[21].text = Localization.t(cDat.evolution) if "evolution" in cDat else ""
 	if "evolution" in current_card:
 		cardDats[21].select(cardNames.find(current_card.evolution) + 1)
 	else:

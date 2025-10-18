@@ -94,31 +94,39 @@ func draw_special():
 	$Button.hint_tooltip = ""
 	
 	if GameOptions.options.show_card_tooltips:
-		$Button.hint_tooltip = card_data.name + "\nPower: " + str(card_data.attack) + "\nHealth: " + str(card_data.health) + "\n"
+		$Button.hint_tooltip = Localization.t(card_data.name) + "\n" + Localization.t("Power: ") + str(card_data.attack) + "\n" + Localization.t("Health: ") + str(card_data.health) + "\n"
 		
 		if "rare" in card_data:
-			$Button.hint_tooltip += "Rare: You may only use one copy of this card in your deck.\n"
+			$Button.hint_tooltip += Localization.t("Rare: You may only use one copy of this card in your deck.") + "\n"
 			
 		if "nosac" in card_data:
-			$Button.hint_tooltip += "Terrain: This card cannot be sacrificed.\n"
+			$Button.hint_tooltip += Localization.t("Terrain: This card cannot be sacrificed.") + "\n"
 		
 		if "nohammer" in card_data:
-			$Button.hint_tooltip += "Unhammerable: This card cannot be hammered.\n"
+			$Button.hint_tooltip += Localization.t("Unhammerable: This card cannot be hammered.") + "\n"
 		
 		if "conduit" in card_data:
-			$Button.hint_tooltip += "Conduit: This card completes a circuit. At least 2 circuit completing \ncards are needed to complete a circuit.\n"
+			$Button.hint_tooltip += Localization.t("Conduit: This card completes a circuit. At least 2 circuit completing \ncards are needed to complete a circuit.") + "\n"
 		
 		if "sigils" in card_data:
 			for sigil in card_data.sigils:
-				var target_text = "\n" + sigil + ": " + CardInfo.all_sigils[sigil]
+				var target_text = "\n" + Localization.t(sigil) + Localization.t(": ") + Localization.t(CardInfo.all_sigils[sigil])
 				
 				var charcnt = 0
 				
-				for word in target_text.split(" "):
+				var splitted_words = null
+				var char_limit = 0
+				if Localization.is_chinese_or_japanese_lang(Localization.lang):
+					splitted_words = target_text.split("")
+					char_limit = 30
+				else:
+					splitted_words = target_text.split(" ")
+					char_limit = 50
+				for word in splitted_words:
 					charcnt += len(word)
-					$Button.hint_tooltip += word + " "
+					$Button.hint_tooltip += word
 					
-					if charcnt > 50:
+					if charcnt > char_limit:
 						$Button.hint_tooltip += "\n"
 						charcnt = 0
 				
@@ -127,7 +135,7 @@ func draw_special():
 					$Button.hint_tooltip += "\n"
 		
 		if "evolution" in card_data:
-			$Button.hint_tooltip += "This card evolves/defrosts into: %s\n\n" % card_data.evolution
+			$Button.hint_tooltip += Localization.t("This card evolves/defrosts into: %s") % Localization.t(card_data.evolution) + "\n\n"
 		
 		
 func draw_cost():

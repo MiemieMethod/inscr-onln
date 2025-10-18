@@ -12,9 +12,11 @@ onready var nLanes = CardInfo.all_data.lanes
 onready var lastLane = CardInfo.all_data.last_lane
 
 # Cards selected for sacrifice
-var sacVictims = []
+var sac_victims = []
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	var slotGroups = [$PlayerSlots, $PlayerSlotsBack, $EnemySlots, $EnemySlotsBack]
 	var newSlot
 	var isBack = false
@@ -107,17 +109,17 @@ func is_cat_bricked() -> bool:
 	return true
 
 func clear_sacrifices():
-	for victim in sacVictims:
+	for victim in sac_victims:
 		victim.get_node("CardBody/SacOlay").visible = false
 		rpc_id(fightManager.opponent, "set_sac_olay_vis", victim.get_parent().get_position_in_parent(), false)
 
-	sacVictims.clear()
+	sac_victims.clear()
 
 func attempt_sacrifice():
 
 	var sacValue = 0
 
-	for victim in sacVictims:
+	for victim in sac_victims:
 		sacValue += victim.calc_blood()
 #		if victim.has_sigil("Worthy Sacrifice"):
 #			sacValue += 2
@@ -130,7 +132,7 @@ func attempt_sacrifice():
 		if not get_available_slots():
 			print("Checking for catbrick...")
 			var bricked = true
-			for v in sacVictims:
+			for v in sac_victims:
 				if v.has_sigil("Many Lives") or v.has_sigil("Frozen Away") or v.has_sigil("Ruby Heart"):
 					continue
 				bricked = false
@@ -140,7 +142,7 @@ func attempt_sacrifice():
 				return
 		
 		# Kill sacrifical victims
-		for victim in sacVictims:
+		for victim in sac_victims:
 			if victim.has_sigil("Many Lives"):
 				victim.get_node("AnimationPlayer").play("CatSac")
 #				rpc_id(fightManager.opponent, "remote_card_anim", victim.slot_idx(), "CatSac")
@@ -173,7 +175,7 @@ func attempt_sacrifice():
 				})
 
 
-		sacVictims.clear()
+		sac_victims.clear()
 
 		# Force player to summon the new card
 		if get_available_slots():

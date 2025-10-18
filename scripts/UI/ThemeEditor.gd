@@ -50,6 +50,8 @@ const default_theme_data = {
 var theme_data = default_theme_data
 
 func _ready():
+	Localization.localize_scene(self)
+
 	connect_controls()
 	attempt_load_theme()
 	apply_theme()

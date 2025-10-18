@@ -12,6 +12,8 @@ var passage_idx = 1
 const TEXT_SPEED = 1
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	load_dialogue()
 	load_passage("entry")
 
@@ -27,11 +29,11 @@ func load_passage(passage_name: String) -> void:
 	# Update room
 	currentRoom = dialogue[GameOptions.options.misplays][passage_name]
 #	currentRoom = dialogue[0][passage_name]
-	$RoomLabel.text = passage_name
+	$RoomLabel.text = Localization.t(passage_name)
 	
 	# Dialogue text
 	currentSubPassage = 0
-	$Dialogue.text = currentRoom.text[0]
+	$Dialogue.text = Localization.t(currentRoom.text[0])
 	$Dialogue.visible_characters = 0
 	
 	# Resume typing
@@ -49,12 +51,12 @@ func display_options():
 	yield($DelayTimer, "timeout")
 	
 	if len(opts) > 0:
-		$OptionA.text = "1. " + opts[0]
+		$OptionA.text = Localization.t("1. ") + Localization.t(opts[0])
 		$OptionA.show()
 		$OptionA._mouse_exited()
 		
 		if len(opts) > 1:
-			$OptionB.text = "2. " + opts[1]
+			$OptionB.text = Localization.t("2. ") + Localization.t(opts[1])
 			$OptionB.show()
 			$OptionB._mouse_exited()
 
@@ -107,7 +109,7 @@ func _input(event):
 				get_tree().change_scene(currentRoom.redir)
 				return
 			
-			$Dialogue.text = currentRoom.text[currentSubPassage + 1]
+			$Dialogue.text = Localization.t(currentRoom.text[currentSubPassage + 1])
 			$Dialogue.visible_characters = 0
 			
 			$Dialogue/Arrow.visible = false

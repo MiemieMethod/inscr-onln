@@ -3,6 +3,9 @@ extends Label
 const BASE_POS = Vector2(730, 465)
 const THUG_STR = 7
 
+func _ready():
+	Localization.localize_scene(self)
+
 func appear(days):
 	if days > 0:
 		text = "god is coming\nin %d days" % days

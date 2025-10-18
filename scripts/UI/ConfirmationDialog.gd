@@ -8,6 +8,8 @@ var current_url = ""
 
 
 func _ready():
+	Localization.localize_scene(self)
+
 	for button in $PanelContainer/VBoxContainer/HBoxContainer.get_children():
 		
 		if button.name == "SourceBtn":

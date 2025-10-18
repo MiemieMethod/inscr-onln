@@ -86,7 +86,7 @@ func _on_Card_mouse_entered():
 	if "description" in card_data:
 		var cDesc = previewCont.get_child(1).get_child(0)
 		cDesc.visible = true
-		cDesc.text = card_data["description"]
+		cDesc.text = Localization.t(card_data["description"])
 
 	if not "sigils" in card_data:
 		return
@@ -102,13 +102,13 @@ func _on_Card_mouse_entered():
 		else:
 			sd.get_child(1).texture = $Sigils/Row1.get_child(sigIdx).texture
 
-		sd.get_child(2).text = sigdat + ":\n" + CardInfo.gen_sig_desc(sigdat, card_data)
+		sd.get_child(2).text = Localization.t(sigdat) + Localization.t(":") + "\n" + CardInfo.gen_sig_desc(sigdat, card_data)
 
 		if "custom_sigils" in CardInfo.all_data and sigdat in CardInfo.all_data.custom_sigils:
-			sd.get_child(2).text += "\nThis is a custom sigil created by " + CardInfo.all_data.custom_sigils[sigdat].author
+			sd.get_child(2).text += "\n" + Localization.t("This is a custom sigil created by ") + CardInfo.all_data.custom_sigils[sigdat].author
 			sd.get_child(2).add_color_override("font_color", Color.darkblue)
 		elif not sigdat in CardInfo.working_sigils:
-			sd.get_child(2).text += "\nThis sigil is not yet implemented, and will not work"
+			sd.get_child(2).text += "\n" + Localization.t("This sigil is not yet implemented, and will not work")
 			sd.get_child(2).add_color_override("font_color", Color.darkred)
 		else:
 			sd.get_child(2).add_color_override("font_color", paperTheme.get_color("font_color", "Label"))

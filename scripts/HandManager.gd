@@ -4,6 +4,9 @@ extends VBoxContainer
 var raisedCard = null
 var opponentRaisedCard = null
 
+func _ready():
+	Localization.localize_scene(self)
+
 func lower_all_cards():
 	for card in $PlayerHand.get_children():
 		card.lower()

@@ -26,6 +26,7 @@ const portrait_override_path = data_path + "/portrait_overrides/"
 const icon_override_path = data_path + "/sigil_icon_overrides/"
 const replay_path = data_path + "/replays/"
 const rulesets_path = data_path + "/rulesets/"
+const rulesets_i18n_candidates_path = data_path + "/rulesets_i18n_candidates/" # for dev
 const scripts_path = data_path + "/scripts/"
 
 # CB
@@ -96,6 +97,8 @@ func from_game_info_json(content_as_object):
 	if "ruleset" in all_data:
 		ruleset = all_data.ruleset
 		deck_backup_path = OS.get_user_data_dir() + "/decks/" + ruleset + "/"
+	
+	Localization.register_ruleset_translations(all_data.get("translations", {}))
 
 
 func read_game_info():
@@ -133,14 +136,14 @@ func gen_sig_desc(sigil: String, card_data):
 	var sigil_regex = RegEx.new()
 	sigil_regex.compile("{(\\w+)}")
 
-	var desc = CardInfo.all_sigils[sigil]
+	var desc = Localization.t(CardInfo.all_sigils[sigil])
 	var var_list = [] # save value to format in later
 	
 	# get all the formated value
 	for res in sigil_regex.search_all(desc):
 		var var_name = res.get_string(1)
 		if var_name in card_data:
-			var_list.append(card_data[var_name])
+			var_list.append(Localization.t(card_data[var_name]))
 		else:
 			var_list.append("")
 			

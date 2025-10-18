@@ -9,6 +9,8 @@ signal received_output(code)
 signal received_error(code)
 
 func _ready():
+	Localization.localize_scene(self)
+	
 	scpt = NativeScript.new()
 	scpt.set_library(library)
 	scpt.set_class_name("AsyncMethods")
