@@ -1,0 +1,29 @@
+{
+    "rulesets": [
+        {
+            "name": "IMF标准版v0.43",
+            "description": "由开发者主观进行平衡\n此多人版游戏的原始规则集。\n包含一些自定义卡牌。",
+            "url": "https://miemiemethod.github.io/inscr-onln/IMF%20Standard%20v0.43.json",
+            "portrait": "portraits/Stoat"
+        },
+        {
+            "name": "IMF永恒版",
+            "description": "由EternalHours制作的全新版本\n有3根蜡烛！\n牌组30张卡\n主牌组每种普通卡3张\n副牌组每种4张",
+            "url": "https://miemiemethod.github.io/inscr-onln/IMF%20Eternal.json",
+            "portrait": "portraits/Ouroboros"
+        },
+        {
+            "name": "IMF原版v0.9",
+            "description": "第二章标准玩法\n每种普通卡4张\n每种稀有卡1张。",
+            "url": "https://miemiemethod.github.io/inscr-onln/IMF%20Vanilla%20v0.9.json",
+            "portrait": "portraits/Cat"
+        },
+        {
+            "name": "Mr.Egg的搞笑版",
+            "description": "由Mr.Egg及其所有奇思妙想进行平衡。\n3根蜡烛。\n主牌组30张卡牌。\n主牌组中每种普通卡2张。\n副牌组中每种普通卡4张。",
+            "url": "https://miemiemethod.github.io/inscr-onln/Mr.Egg's%20Goofy.json",
+            "portrait": "pixport/Raven Egg"
+        }
+    ],
+    "jake": "IMF标准版v0.43需要游戏版本v0.3.9999！\n否则触手会失效"
+}
